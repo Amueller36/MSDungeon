@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: player-thelegend27
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: player-thelegend27
+  template:
+    metadata:
+      labels:
+        app: player-thelegend27
+    spec:
+      containers:
+        - name: player-thelegend27
+          image: registry.gitlab.com/the-microservice-dungeon/player-teams/player-thelegend27:latest
+          ports:
+            - containerPort: 8090
+          env:
+            - name: GAME_HOST
+              value: "http://game-service.game:8080"
+            - name: RABBITMQ_USERNAME
+              value: "admin"
+            - name: RABBITMQ_PASSWORD
+              value: "admin"
+            - name: RABBITMQ_HOST
+              value: "rabbitmq-service.rabbitmq"
+            - name: RABBITMQ_PORT
+              value: "5672"

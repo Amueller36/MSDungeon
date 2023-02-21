@@ -1,0 +1,43 @@
+image: docker:20.10.16
+services:
+  - docker:20.10.16-dind
+
+variables:
+  # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_CERTDIR: "/certs"
+  GAME_HOST: "http://localhost:8080"
+  RABBITMQ_USERNAME: "admin"
+  RABBITMQ_PASSWORD: "admin"
+  RABBITMQ_HOST: "localhost"
+  RABBITMQ_PORT: 5672
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:latest
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - docker
+    
+
+maven-build:
+  image: maven:3.8.7-openjdk-18-slim
+
+  stage: build
+  script:
+    - export GAME_HOST=$GAME_HOST
+    - export RABBITMQ_USERNAME=$RABBITMQ_USERNAME
+    - export RABBITMQ_PASSWORD=$RABBITMQ_PASSWORD
+    - export RABBITMQ_PORT=$RABBITMQ_PORT
+    - export RABBITMQ_HOST=$RABBITMQ_HOST
+    - mvn clean package -B
+  artifacts:
+    paths:
+      - target/*.jar
+
+
+
+docker-build:
+  stage: docker
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build $DOCKER_BUILD_ARGS -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG

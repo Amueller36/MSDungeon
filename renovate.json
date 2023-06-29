@@ -3,9 +3,10 @@
     "extends": [
       "config:base"
     ],
+    "baseBranches": ["master"],
+    "repositories": ["Amueller36/MSDungeon"]
     "automerge": true,
     "automergeType": "pr",
     "prConcurrentLimit": 5,
     "rebaseWhen": "behind-base-branch"
-  }
-  
+}

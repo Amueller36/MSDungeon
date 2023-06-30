@@ -1,6 +1,14 @@
 name: Renovate
 on:
   workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  actions: write
+  pull-requests: write
+  issues: write
+  repository-projects: write
   
 jobs:
   renovate:
